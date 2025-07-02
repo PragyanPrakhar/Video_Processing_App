@@ -3,6 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js"; // Importing auth routes
 import cors from "cors"; // Importing CORS middleware
+import videoRoutes from "./routes/video.route.js"; // Importing video routes
 
 const app = express();
 app.use(
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes will be added here like:
 app.use("/api/auth", authRoutes); // Using auth routes
+app.use("/api/videos",videoRoutes); // Using video routes
 
 // import videoRoutes from "./routes/video.route.js";
 // app.use("/api/videos", videoRoutes);

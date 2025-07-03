@@ -12,7 +12,7 @@ export const checkVideoExists = async (req, res, next) => {
     try {
         await r2.send(
             new HeadObjectCommand({
-                Bucket: process.env.R2_BUCKET,
+                Bucket: process.env.CLOUDFLARE_BUCKET_NAME,
                 Key: key,
             })
         );

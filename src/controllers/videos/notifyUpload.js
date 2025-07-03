@@ -1,10 +1,13 @@
 import express from "express";
 import pool from "../../db.js"; // Assuming you have a db.js file for database connection
-
+import { videoQueue } from "../../queue/videoQueue.js";
 
 export const notifyUpload = async (req, res) => {
     const { key } = req.body;
     const userId = req.user.id;
+    if (!userId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
 
     const safeKey = key?.trim();
     if (!safeKey || !safeKey.startsWith("videos/")) {
@@ -31,11 +34,21 @@ export const notifyUpload = async (req, res) => {
         const video = dbRes.rows[0];
 
         // 🔜 Queue for background processing
-        // await videoQueue.add("process-video", {
-        //   videoId: video.id,
-        //   videoKey: video.video_key,
-        //   userId,
-        // });
+        await videoQueue.add(
+            "video-processing",
+            {
+                videoId: video.id,
+                videoKey: video.video_key,
+                userId,
+            },
+            {
+                attempts: 3, // Retry up to 3 times on failure
+                backoff: {
+                    type: "exponential",    // 
+                    delay: 5000,
+                },
+            }
+        );
 
         return res.status(201).json({
             message: "Video upload notification received. Processing started.",

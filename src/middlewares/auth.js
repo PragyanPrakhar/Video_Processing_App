@@ -11,9 +11,9 @@ export const isAuthenticated = (req, res, next) => {
         if (!decoded || !decoded.id || !decoded.email) {
             return res.status(401).json({ error: "Invalid token" });
         }
-        if (process.env.NODE_ENV !== "production") {
+        /* if (process.env.NODE_ENV !== "production") {
             console.log("✅ Authenticated user:", decoded);
-        }
+        } */
 
         // You can also attach user info to the request object if needed
         // For example, req.user = { id: decoded.id, email: decoded.email };
